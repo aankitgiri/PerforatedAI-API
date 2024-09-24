@@ -2,6 +2,8 @@
 
 The purpose of this repository is to provide a walkthrough for how to add Perforated AI's Perforated Backpropagation<sup>tm</sup> to your code.  When starting a new project first just add the sections from this README. Once they have been added you can run your code and it will give you errors and warnings about if any "customization" coding is actually required for your architecture.  The ways to fix these are in [customization.md](customization.md).  After running your pipeline you can view the graph that shows the correlation values and experiment with the other settings in customization.md that may help get better results. 
 
+If you have not done so yet go to our [website](https://www.perforatedai.com/getstarted) and fill out the form to get your RSA license file which is required to run our software.  Once we have emailed it to you, just put it in the same folder as you run your program from and the software will find it.
+
 ## 1 - Main Script
 ### 1.1 - Imports
 These are all the imports you will need at the top of your main training file.  They will be needed in all of your files that call these functions if some of the below ends up being put into other files.
@@ -21,7 +23,7 @@ In globalsFile.py there are many different configuration settings you can play w
     gf.pEpochsToSwitch = 10  # Same as above for Dendrite epochs
     gf.inputDimensions = [-1, 0, -1, -1] # The default shape of input tensors
     gf.capAtN = True  # This ensures that Dendrite cycles do not take more epochs than neuron cycles
-
+    gf.historyLookback = 1 # This can be set to a higher value if you want to load best models based on average lookback over a set of epochs, but generally just setting it to 1 to not average is best.
     
 The alternative switch mode is:
     
@@ -149,12 +151,12 @@ At the end of your validation loop the following must be called so the tracker k
     args.saveName)
     Then following line should be replaced with whatever is being used to set up the gpu settings, including PAIDataParallel
     model.to(device)
-    if(restructured): if it does get restructured, reset the optimizer with the same block of code you use above.
+    if(trainingComplete):
+        Break the loop or do whatever you need to do once training is over
+    elif(restructured): if it does get restructured, reset the optimizer with the same block of code you use above.
         optimArgs = {'params':model.parameters(),'lr':learning_rate}
         schedArgs = {'mode':'max', 'patience': 5} #Make sure this is lower than epochs to switch
         optimizer, scheduler = gf.pbTracker.setupOptimizer(model, optimArgs, schedArgs)
-    if(trainingComplete):
-        Break the loop or do whatever you need to do once training is over
     
 Description of variables:
 

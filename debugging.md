@@ -106,6 +106,13 @@ If you get this error in setupOptimizer it means you called setupOptimizer but y
     
 If you get this error it means your neurons are not correctly matched in setInputDimensions.  If your 0 is in the wrong index the tensors that get used for tracking the Dendrite to Neuron weights will be the wrong size.
 
+## Initialization Errors
+
+    File "perforatedai/pb_layer.py" ... perforatedai.pb_layer.pb_neuron_layer.__init__
+    IndexError: list index out of range
+    
+This means you did something wrong with the processing classes.  We have seen this before when moduleNamesWithProcessing and moduleByNameProcessingClasses don't line up.  Remember they need to be added in order in both arrays, and if the module is "by name" the processor also has to be added to the "by name" array.
+
 
 
 ## Things not Getting Converted
